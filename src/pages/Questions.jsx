@@ -245,7 +245,7 @@ export default function Questions() {
 
         <main className="flex-1 flex flex-col min-h-screen">
           {/* Header */}
-          <div className="bg-white/80 backdrop-blur-sm border-b border-slate-200 px-6 py-4 sticky top-0 z-10">
+          <div className="mb-6">
             <Topbar
               profile={profile}
               onSearch={handleSearch}
@@ -397,7 +397,12 @@ export default function Questions() {
         }}
         onClose={() => {
           console.log("🔴 Bouton Annuler cliqué dans la modal");
-          setConfirmAction({ isOpen: false, title: "", message: "", onConfirm: () => {} });
+          setConfirmAction({
+            isOpen: false,
+            title: "",
+            message: "",
+            onConfirm: () => {},
+          });
         }}
       >
         {confirmAction.message}

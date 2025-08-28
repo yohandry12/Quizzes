@@ -229,7 +229,7 @@ export default function Dashboard() {
         <Sidebar active={active} setActive={setActive} />
 
         <main className="flex-1 flex flex-col min-h-screen">
-          <div className="mb-6 p-6">
+          <div className="mb-6">
             <Topbar
               onOpenCreate={() => {
                 setEditing(null);

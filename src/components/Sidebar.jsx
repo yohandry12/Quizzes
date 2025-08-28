@@ -4,7 +4,8 @@ import {
   PieChart,
   Users,
   Settings,
-  Edit2,
+  FolderTree,
+  Building2,
   LogOut,
   FileQuestion,
 } from "lucide-react";
@@ -18,10 +19,15 @@ export default function Sidebar({ active, setActive }) {
     {
       key: "sector_activity",
       label: "Secteur d'activité",
-      icon: Edit2,
+      icon: Building2,
       path: "/business-sectors",
     },
-    { key: "category", label: "Catégories", icon: Edit2, path: "/categories" },
+    {
+      key: "category",
+      label: "Catégories",
+      icon: FolderTree,
+      path: "/categories",
+    },
     { key: "quiz", label: "Quiz", icon: PieChart, path: "/quiz" },
     {
       key: "questions",
