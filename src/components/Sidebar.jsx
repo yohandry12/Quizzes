@@ -1,12 +1,20 @@
 import React from "react";
-import { Grid, PieChart, Users, Settings, Edit2, LogOut } from "lucide-react";
+import {
+  Grid,
+  PieChart,
+  Users,
+  Settings,
+  Edit2,
+  LogOut,
+  FileQuestion,
+} from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 export default function Sidebar({ active, setActive }) {
   const navigate = useNavigate();
 
   const nav = [
-    { key: "dashboard", label: "Dashboard", icon: Grid, path: "/dashboard" },
+    { key: "dashboard", label: "Dashboard", icon: Grid, path: "/" },
     {
       key: "sector_activity",
       label: "Secteur d'activité",
@@ -15,8 +23,13 @@ export default function Sidebar({ active, setActive }) {
     },
     { key: "category", label: "Catégories", icon: Edit2, path: "/categories" },
     { key: "quiz", label: "Quiz", icon: PieChart, path: "/quiz" },
-    { key: "users", label: "Users", icon: Users, path: "/dashboard" },
-    { key: "settings", label: "Settings", icon: Settings, path: "/dashboard" },
+    {
+      key: "questions",
+      label: "Questions",
+      icon: FileQuestion,
+      path: "/questions",
+    },
+    { key: "settings", label: "Settings", icon: Settings, path: "/" },
   ];
 
   return (

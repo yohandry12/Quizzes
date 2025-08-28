@@ -10,7 +10,7 @@ export default function ConfirmationModal({
   children,
 }) {
   return (
-    <Modal open={open} onClose={onClose} sizeClass="w-[440px]">
+    <Modal open={open} onClose={onClose} sizeClass="w-[440px]" showHeader={false} showClose={false}>
       <div className="p-4 text-center">
         <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100">
           <AlertTriangle className="h-6 w-6 text-red-600" aria-hidden="true" />

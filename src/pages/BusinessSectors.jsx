@@ -145,9 +145,9 @@ export default function BusinessSectors() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white text-slate-800">
-      <div className="max-w-[1200px] mx-auto p-6 flex gap-6">
+      <div className="flex">
         <Sidebar active="sector_activity" setActive={() => {}} />
-        <main className="flex-1">
+        <main className="flex-1 flex flex-col min-h-screen">
           <div className="mb-6">
             <Topbar
               onOpenCreate={() => {
@@ -158,10 +158,18 @@ export default function BusinessSectors() {
               profile={profile}
             />
           </div>
-          <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
-            <div className="flex items-center justify-between mb-4">
-              <div className="font-semibold">
-                {isTrashView ? "Corbeille" : "Liste des secteurs d'activité"}
+          <div className="p-6">
+            <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+            <div className="p-6 border-b border-slate-100 flex items-center justify-between">
+              <div>
+                <div className="text-slate-900 font-semibold">
+                  {isTrashView ? "Corbeille" : "Liste des secteurs d'activité"}
+                </div>
+                <p className="text-slate-600 text-sm mt-1">
+                  {isTrashView
+                    ? "Restaurez ou supprimez définitivement vos secteurs"
+                    : "Créez, modifiez et organisez vos secteurs d'activité"}
+                </p>
               </div>
               <div className="flex items-center gap-2">
                 <button
@@ -171,29 +179,31 @@ export default function BusinessSectors() {
                   <Plus size={16} />
                   Créer un secteur
                 </button>
-                <button
-                  onClick={() => setIsTrashView(false)}
-                  className={`px-3 py-1 text-sm rounded-lg ${
-                    !isTrashView
-                      ? "bg-indigo-100 text-indigo-700"
-                      : "hover:bg-slate-100"
-                  }`}
-                >
-                  Liste principale
-                </button>
-                <button
-                  onClick={() => setIsTrashView(true)}
-                  className={`px-3 py-1 text-sm rounded-lg ${
-                    isTrashView
-                      ? "bg-red-100 text-red-700"
-                      : "hover:bg-slate-100"
-                  }`}
-                >
-                  Corbeille
-                </button>
+                <div className="flex items-center bg-slate-100 rounded-xl p-1">
+                  <button
+                    onClick={() => setIsTrashView(false)}
+                    className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-all ${
+                      !isTrashView
+                        ? "bg-white text-indigo-700 shadow-sm"
+                        : "text-slate-600 hover:text-slate-900"
+                    }`}
+                  >
+                    Liste principale
+                  </button>
+                  <button
+                    onClick={() => setIsTrashView(true)}
+                    className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-all ${
+                      isTrashView
+                        ? "bg-white text-red-700 shadow-sm"
+                        : "text-slate-600 hover:text-slate-900"
+                    }`}
+                  >
+                    Corbeille
+                  </button>
+                </div>
               </div>
             </div>
-            <div className="overflow-x-auto">
+            <div className="p-6 overflow-x-auto">
               <table className="w-full border border-slate-200 rounded-lg overflow-hidden text-sm">
                 <thead className="bg-slate-50 text-slate-700">
                   <tr>
@@ -265,11 +275,14 @@ export default function BusinessSectors() {
                 </tbody>
               </table>
             </div>
-            <Pagination
-              currentPage={currentPage}
-              totalPages={totalPages}
-              onPageChange={setCurrentPage}
-            />
+            <div className="px-6 pb-6">
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={setCurrentPage}
+              />
+            </div>
+            </div>
           </div>
           <Modal
             open={openCreate}

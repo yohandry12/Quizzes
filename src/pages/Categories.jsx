@@ -142,10 +142,10 @@ export default function Categories() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white text-slate-800">
-      <div className="max-w-[1200px] mx-auto p-6 flex gap-6">
+    <div className="min-h-screen bg-slate-50/50">
+      <div className="flex">
         <Sidebar active="category" setActive={() => {}} />
-        <main className="flex-1">
+        <main className="flex-1 flex flex-col min-h-screen">
           <div className="mb-6">
             <Topbar
               onOpenCreate={() => {
@@ -156,128 +156,145 @@ export default function Categories() {
               profile={profile}
             />
           </div>
-          <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
-            <div className="flex items-center justify-between mb-4">
-              <div className="font-semibold">
-                {isTrashView ? "Corbeille" : "Liste des catégories"}
+          <div className="p-6">
+            <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+              <div className="p-6 border-b border-slate-100 flex items-center justify-between">
+                <div>
+                  <div className="text-slate-900 font-semibold">
+                    {isTrashView ? "Corbeille" : "Liste des catégories"}
+                  </div>
+                  <p className="text-slate-600 text-sm mt-1">
+                    {isTrashView
+                      ? "Restaurez ou supprimez définitivement vos catégories"
+                      : "Créez, modifiez et organisez vos catégories"}
+                  </p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => setOpenCreate(true)}
+                    className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 flex items-center gap-2"
+                  >
+                    <Plus size={16} />
+                    Créer une catégorie
+                  </button>
+                  <div className="flex items-center bg-slate-100 rounded-xl p-1">
+                    <button
+                      onClick={() => setIsTrashView(false)}
+                      className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-all ${
+                        !isTrashView
+                          ? "bg-white text-indigo-700 shadow-sm"
+                          : "text-slate-600 hover:text-slate-900"
+                      }`}
+                    >
+                      Liste principale
+                    </button>
+                    <button
+                      onClick={() => setIsTrashView(true)}
+                      className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-all ${
+                        isTrashView
+                          ? "bg-white text-red-700 shadow-sm"
+                          : "text-slate-600 hover:text-slate-900"
+                      }`}
+                    >
+                      Corbeille
+                    </button>
+                  </div>
+                </div>
               </div>
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => setOpenCreate(true)}
-                  className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 flex items-center gap-2"
-                >
-                  <Plus size={16} />
-                  Créer une catégorie
-                </button>
-                <button
-                  onClick={() => setIsTrashView(false)}
-                  className={`px-3 py-1 text-sm rounded-lg ${
-                    !isTrashView
-                      ? "bg-indigo-100 text-indigo-700"
-                      : "hover:bg-slate-100"
-                  }`}
-                >
-                  Liste principale
-                </button>
-                <button
-                  onClick={() => setIsTrashView(true)}
-                  className={`px-3 py-1 text-sm rounded-lg ${
-                    isTrashView
-                      ? "bg-red-100 text-red-700"
-                      : "hover:bg-slate-100"
-                  }`}
-                >
-                  Corbeille
-                </button>
-              </div>
-            </div>
-            <div className="overflow-x-auto">
-              <table className="w-full border border-slate-200 rounded-lg overflow-hidden text-sm">
-                <thead className="bg-slate-50 text-slate-700">
-                  <tr>
-                    <th className="text-left px-4 py-2 border-b">Titre</th>
-                    <th className="text-left px-4 py-2 border-b">
-                      Description
-                    </th>
-                    <th className="text-right px-4 py-2 border-b">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {(isTrashView ? trashedCategories : categories).map(
-                    (category) => (
-                      <tr
-                        key={category.id}
-                        className={
-                          isTrashView ? "hover:bg-red-50" : "hover:bg-slate-50"
-                        }
-                      >
-                        <td
+              <div className="p-6 overflow-x-auto">
+                <table className="w-full border border-slate-200 rounded-lg overflow-hidden text-sm">
+                  <thead className="bg-slate-50 text-slate-700">
+                    <tr>
+                      <th className="text-left px-4 py-2 border-b">Titre</th>
+                      <th className="text-left px-4 py-2 border-b">
+                        Description
+                      </th>
+                      <th className="text-right px-4 py-2 border-b">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {(isTrashView ? trashedCategories : categories).map(
+                      (category) => (
+                        <tr
+                          key={category.id}
                           className={
                             isTrashView
-                              ? "px-4 py-2 font-medium text-red-800"
-                              : "px-4 py-2 font-medium text-slate-800"
+                              ? "hover:bg-red-50"
+                              : "hover:bg-slate-50"
                           }
                         >
-                          {category.name}
-                          <span className="text-xs text-slate-400">
-                            (id: {category.id})
-                          </span>
-                        </td>
-                        <td className="px-4 py-2 text-slate-600">
-                          {category.description || "-"}
-                        </td>
-                        <td className="px-4 py-2 text-right flex justify-end gap-2">
-                          {!isTrashView && (
-                            <>
-                              <button
-                                onClick={() => handleEditCategory(category)}
-                                className="p-1 hover:bg-slate-200 rounded"
-                              >
-                                <Edit size={16} />
-                              </button>
-                              <button
-                                onClick={() =>
-                                  handleSoftDeleteCategory(category)
-                                }
-                                className="p-1 hover:bg-red-100 rounded"
-                              >
-                                <Trash2 size={16} className="text-red-500" />
-                              </button>
-                            </>
-                          )}
-                          {isTrashView && (
-                            <>
-                              <button
-                                onClick={() => handleRestoreCategory(category)}
-                                className="p-1 hover:bg-green-100 rounded"
-                              >
-                                <RotateCcw
-                                  size={16}
-                                  className="text-green-500"
-                                />
-                              </button>
-                              <button
-                                onClick={() =>
-                                  handlePermanentDeleteCategory(category)
-                                }
-                                className="p-1 hover:bg-red-100 rounded"
-                              >
-                                <Trash2 size={16} className="text-red-500" />
-                              </button>
-                            </>
-                          )}
-                        </td>
-                      </tr>
-                    )
-                  )}
-                </tbody>
-              </table>
+                          <td
+                            className={
+                              isTrashView
+                                ? "px-4 py-2 font-medium text-red-800"
+                                : "px-4 py-2 font-medium text-slate-800"
+                            }
+                          >
+                            {category.name}
+                            <span className="text-xs text-slate-400">
+                              (id: {category.id})
+                            </span>
+                          </td>
+                          <td className="px-4 py-2 text-slate-600">
+                            {category.description || "-"}
+                          </td>
+                          <td className="px-4 py-2 text-right flex justify-end gap-2">
+                            {!isTrashView && (
+                              <>
+                                <button
+                                  onClick={() => handleEditCategory(category)}
+                                  className="p-1 hover:bg-slate-200 rounded"
+                                >
+                                  <Edit size={16} />
+                                </button>
+                                <button
+                                  onClick={() =>
+                                    handleSoftDeleteCategory(category)
+                                  }
+                                  className="p-1 hover:bg-red-100 rounded"
+                                >
+                                  <Trash2 size={16} className="text-red-500" />
+                                </button>
+                              </>
+                            )}
+                            {isTrashView && (
+                              <>
+                                <button
+                                  onClick={() =>
+                                    handleRestoreCategory(category)
+                                  }
+                                  className="p-1 hover:bg-green-100 rounded"
+                                >
+                                  <RotateCcw
+                                    size={16}
+                                    className="text-green-500"
+                                  />
+                                </button>
+                                <button
+                                  onClick={() =>
+                                    handlePermanentDeleteCategory(category)
+                                  }
+                                  className="p-1 hover:bg-red-100 rounded"
+                                >
+                                  <Trash2 size={16} className="text-red-500" />
+                                </button>
+                              </>
+                            )}
+                          </td>
+                        </tr>
+                      )
+                    )}
+                  </tbody>
+                </table>
+              </div>
+              <div className="px-6 pb-6">
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  onPageChange={setCurrentPage}
+                />
+              </div>
             </div>
-            <Pagination
-              currentPage={currentPage}
-              totalPages={totalPages}
-              onPageChange={setCurrentPage}
-            />
           </div>
           <Modal
             open={openCreate}

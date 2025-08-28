@@ -6,6 +6,7 @@ import Quiz from "./pages/Quiz";
 import Categories from "./pages/Categories";
 import BusinessSectors from "./pages/BusinessSectors";
 import QuizDetailsPage from "./pages/QuizDetailsPage";
+import Questions from "./pages/Questions.jsx";
 
 function RequireAuth({ children }) {
   const token = localStorage.getItem("admin_token");
@@ -23,7 +24,7 @@ export default function AppRoutes() {
       <Routes>
         <Route path="/login" element={<AdminLogin />} />
         <Route
-          path="/dashboard"
+          path="/"
           element={
             <RequireAuth>
               <Dashboard />
@@ -59,6 +60,14 @@ export default function AppRoutes() {
           element={
             <RequireAuth>
               <BusinessSectors />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/questions"
+          element={
+            <RequireAuth>
+              <Questions />
             </RequireAuth>
           }
         />

@@ -12,7 +12,7 @@ function IconButton({ children, onClick, className = "" }) {
   );
 }
 
-export default function Topbar({ onOpenCreate, onSearch, profile }) {
+export default function Topbar({ onSearch, profile }) {
   return (
     <div className="bg-slate-50/80 backdrop-blur-sm border-b border-slate-200 flex items-center justify-between gap-4">
       <div className="flex items-center gap-3">
@@ -35,10 +35,7 @@ export default function Topbar({ onOpenCreate, onSearch, profile }) {
           <Search className="w-4 h-4 absolute left-3 top-2.5 text-slate-400" />
         </div>
 
-        <IconButton className="bg-indigo-600 text-white" onClick={onOpenCreate}>
-          <PlusCircle className="w-4 h-4" />
-          <span>Créer une Question</span>
-        </IconButton>
+
 
         <div className="flex items-center gap-2 px-3 py-1 rounded-xl border border-slate-200/60 bg-white/70 backdrop-blur-sm hover:bg-white/90 transition-all">
           <div className="w-8 h-8 rounded-full bg-gradient-to-br from-pink-400 to-yellow-300 flex items-center justify-center text-white font-semibold">

@@ -307,10 +307,10 @@ export default function Quiz() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white text-slate-800">
-      <div className="max-w-[1200px] mx-auto p-6 flex gap-6">
+      <div className="flex">
         <Sidebar active={active} setActive={setActive} />
 
-        <main className="flex-1">
+        <main className="flex-1 flex flex-col min-h-screen">
           <div className="mb-6">
             <Topbar
               onOpenCreate={() => {
@@ -322,9 +322,9 @@ export default function Quiz() {
             />
           </div>
 
-          <div className="space-y-6">
+          <div className="p-6">
             {/* En-tête */}
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between mb-6">
               <h1 className="text-2xl font-bold text-slate-800">
                 Gestion des Quiz
               </h1>
@@ -341,192 +341,205 @@ export default function Quiz() {
             </div>
 
             {/* Liste des quiz */}
-            <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
-              <div className="flex items-center justify-between mb-4">
-                <div className="font-semibold">
-                  {isTrashView ? "Corbeille" : "Liste des quiz"}
+            <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+              {/* Header de section */}
+              <div className="p-6 border-b border-slate-100 flex items-center justify-between">
+                <div>
+                  <div className="text-slate-900 font-semibold">
+                    {isTrashView ? "Corbeille" : "Liste des quiz"}
+                  </div>
+                  <p className="text-slate-600 text-sm mt-1">
+                    {isTrashView
+                      ? "Restaurez ou supprimez définitivement vos quiz"
+                      : "Parcourez et gérez vos quiz"}
+                  </p>
                 </div>
                 {/* BOUTONS POUR BASCULER DE VUE */}
-                <div className="flex items-center gap-2">
+                <div className="flex items-center bg-slate-100 rounded-xl p-1">
                   <button
                     onClick={() => setIsTrashView(false)}
-                    className={`px-3 py-1 text-sm rounded-lg ${
+                    className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-all ${
                       !isTrashView
-                        ? "bg-indigo-100 text-indigo-700"
-                        : "hover:bg-slate-100"
+                        ? "bg-white text-indigo-700 shadow-sm"
+                        : "text-slate-600 hover:text-slate-900"
                     }`}
                   >
                     Liste principale
                   </button>
                   <button
                     onClick={() => setIsTrashView(true)}
-                    className={`px-3 py-1 text-sm rounded-lg ${
+                    className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-all ${
                       isTrashView
-                        ? "bg-red-100 text-red-700"
-                        : "hover:bg-slate-100"
+                        ? "bg-white text-red-700 shadow-sm"
+                        : "text-slate-600 hover:text-slate-900"
                     }`}
                   >
                     Corbeille
                   </button>
                 </div>
               </div>
-              {isLoading ? (
-                <div className="text-center py-8">
-                  <div className="text-slate-500">Chargement des quiz...</div>
-                </div>
-              ) : filteredQuizzes().length === 0 ? (
-                <div className="text-center py-8">
-                  <div className="text-slate-400 mb-4">
-                    <Plus size={48} className="mx-auto" />
+              {/* Contenu de section */}
+              <div className="p-6">
+                {isLoading ? (
+                  <div className="text-center py-8">
+                    <div className="text-slate-500">Chargement des quiz...</div>
                   </div>
-                  <h3 className="text-lg font-medium text-slate-600 mb-2">
-                    Aucun quiz trouvé
-                  </h3>
-                  <p className="text-slate-500 mb-4">
-                    Commencez par créer votre premier quiz
-                  </p>
-                  <button
-                    onClick={() => {
-                      setEditingQuiz(null);
-                      setOpenCreate(true);
-                    }}
-                    className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                  >
-                    Créer un quiz
-                  </button>
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  {filteredQuizzes().map((quiz) => (
-                    <div
-                      key={quiz.id}
-                      className="border border-slate-200 rounded-lg p-4 hover:bg-slate-50 transition-colors"
+                ) : filteredQuizzes().length === 0 ? (
+                  <div className="text-center py-8">
+                    <div className="text-slate-400 mb-4">
+                      <Plus size={48} className="mx-auto" />
+                    </div>
+                    <h3 className="text-lg font-medium text-slate-600 mb-2">
+                      Aucun quiz trouvé
+                    </h3>
+                    <p className="text-slate-500 mb-4">
+                      Commencez par créer votre premier quiz
+                    </p>
+                    <button
+                      onClick={() => {
+                        setEditingQuiz(null);
+                        setOpenCreate(true);
+                      }}
+                      className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                     >
-                      <div className="flex items-start justify-between">
-                        <div className="flex-1">
-                          <div className="flex items-center gap-3 mb-2">
-                            <h3 className="font-semibold text-slate-800">
-                              {quiz.title}
-                            </h3>
-                            <span
-                              className={`px-2 py-1 text-xs rounded-full ${getDifficultyColor(
-                                quiz.difficulty_level
-                              )}`}
-                            >
-                              {getDifficultyLabel(quiz.difficulty_level)}
-                            </span>
-                          </div>
-
-                          {quiz.description && (
-                            <p className="text-slate-600 text-sm mb-3">
-                              {quiz.description}
-                            </p>
-                          )}
-
-                          <div className="flex items-center gap-4 text-xs text-slate-500">
-                            <div className="flex items-center gap-1">
-                              <Clock size={14} />
-                              <span>
-                                {quiz.time_limit > 0
-                                  ? `${Math.floor(quiz.time_limit / 60)} min`
-                                  : "Pas de limite"}
-                              </span>
-                            </div>
-                            <div className="flex items-center gap-1">
-                              <Target size={14} />
-                              <span>{quiz.passing_score}% de réussite</span>
-                            </div>
-                            <div className="flex items-center gap-1">
-                              <Users size={14} />
-                              <span>{quiz.max_attempts || 0} tentatives</span>
-                            </div>
-                            <div className="flex items-center gap-1">
-                              <BarChart3 size={14} />
-                              <span>
-                                {quiz.question_count ||
-                                  quiz.question_ids?.length ||
-                                  0}{" "}
-                                questions
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-
-                        <div className="flex items-center gap-2 ml-4">
-                          <button
-                            onClick={() => navigate(`/quiz/${quiz.id}`)}
-                            className="p-2 hover:bg-slate-200 rounded-lg"
-                            title="Voir les détails"
-                          >
-                            <Eye size={16} />
-                          </button>
-                          {!isTrashView && (
-                            <>
-                              <button
-                                onClick={() => handleEditQuiz(quiz)}
-                                className="p-2 hover:bg-slate-200 rounded-lg"
-                                title="Modifier"
+                      Créer un quiz
+                    </button>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {filteredQuizzes().map((quiz) => (
+                      <div
+                        key={quiz.id}
+                        className="border border-slate-200 rounded-lg p-4 hover:bg-slate-50 transition-colors"
+                      >
+                        <div className="flex items-start justify-between">
+                          <div className="flex-1">
+                            <div className="flex items-center gap-3 mb-2">
+                              <h3 className="font-semibold text-slate-800">
+                                {quiz.title}
+                              </h3>
+                              <span
+                                className={`px-2 py-1 text-xs rounded-full ${getDifficultyColor(
+                                  quiz.difficulty_level
+                                )}`}
                               >
-                                <Edit size={16} />
-                              </button>
-                              {/* <button
+                                {getDifficultyLabel(quiz.difficulty_level)}
+                              </span>
+                            </div>
+
+                            {quiz.description && (
+                              <p className="text-slate-600 text-sm mb-3">
+                                {quiz.description}
+                              </p>
+                            )}
+
+                            <div className="flex items-center gap-4 text-xs text-slate-500">
+                              <div className="flex items-center gap-1">
+                                <Clock size={14} />
+                                <span>
+                                  {quiz.time_limit > 0
+                                    ? `${Math.floor(quiz.time_limit / 60)} min`
+                                    : "Pas de limite"}
+                                </span>
+                              </div>
+                              <div className="flex items-center gap-1">
+                                <Target size={14} />
+                                <span>{quiz.passing_score}% de réussite</span>
+                              </div>
+                              <div className="flex items-center gap-1">
+                                <Users size={14} />
+                                <span>{quiz.max_attempts || 0} tentatives</span>
+                              </div>
+                              <div className="flex items-center gap-1">
+                                <BarChart3 size={14} />
+                                <span>
+                                  {quiz.question_count ||
+                                    quiz.question_ids?.length ||
+                                    0}{" "}
+                                  questions
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="flex items-center gap-2 ml-4">
+                            <button
+                              onClick={() => navigate(`/quiz/${quiz.id}`)}
+                              className="p-2 hover:bg-slate-200 rounded-lg"
+                              title="Voir les détails"
+                            >
+                              <Eye size={16} />
+                            </button>
+                            {!isTrashView && (
+                              <>
+                                <button
+                                  onClick={() => handleEditQuiz(quiz)}
+                                  className="p-2 hover:bg-slate-200 rounded-lg"
+                                  title="Modifier"
+                                >
+                                  <Edit size={16} />
+                                </button>
+                                {/* <button
                                 onClick={() => handleAddQuestions(quiz)}
                                 className="p-2 hover:bg-indigo-100 rounded-lg"
                                 title="Ajouter des questions"
                               >
                                 <Plus size={16} />
                               </button> */}
-                              <button
-                                onClick={() => handleDuplicateQuiz(quiz)}
-                                className="p-2 hover:bg-green-100 rounded-lg"
-                                title="Dupliquer"
-                              >
-                                <Copy size={16} />
-                              </button>
-                              <button
-                                onClick={() => handleSoftDeleteQuiz(quiz)}
-                                className="p-2 hover:bg-red-100 rounded-lg"
-                                title="Mettre à la corbeille"
-                              >
-                                <Trash2 size={16} />
-                              </button>
-                            </>
-                          )}
-                          {isTrashView && (
-                            <>
-                              <button
-                                onClick={() => handleRestoreQuiz(quiz)}
-                                className="p-2 hover:bg-green-100 rounded-lg"
-                                title="Restaurer"
-                              >
-                                <RotateCcw size={16} />
-                              </button>
-                              <button
-                                onClick={() => handlePermanentDeleteQuiz(quiz)}
-                                className="p-2 hover:bg-red-100 rounded-lg"
-                                title="Supprimer définitivement"
-                              >
-                                <Trash2 size={16} />
-                              </button>
-                            </>
-                          )}
+                                <button
+                                  onClick={() => handleDuplicateQuiz(quiz)}
+                                  className="p-2 hover:bg-green-100 rounded-lg"
+                                  title="Dupliquer"
+                                >
+                                  <Copy size={16} />
+                                </button>
+                                <button
+                                  onClick={() => handleSoftDeleteQuiz(quiz)}
+                                  className="p-2 hover:bg-red-100 rounded-lg"
+                                  title="Mettre à la corbeille"
+                                >
+                                  <Trash2 size={16} />
+                                </button>
+                              </>
+                            )}
+                            {isTrashView && (
+                              <>
+                                <button
+                                  onClick={() => handleRestoreQuiz(quiz)}
+                                  className="p-2 hover:bg-green-100 rounded-lg"
+                                  title="Restaurer"
+                                >
+                                  <RotateCcw size={16} />
+                                </button>
+                                <button
+                                  onClick={() =>
+                                    handlePermanentDeleteQuiz(quiz)
+                                  }
+                                  className="p-2 hover:bg-red-100 rounded-lg"
+                                  title="Supprimer définitivement"
+                                >
+                                  <Trash2 size={16} />
+                                </button>
+                              </>
+                            )}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
-                </div>
-              )}
+                    ))}
+                  </div>
+                )}
 
-              {/* Pagination */}
-              {totalPages > 1 && (
-                <div className="mt-6">
-                  <Pagination
-                    currentPage={currentPage}
-                    totalPages={totalPages}
-                    onPageChange={setCurrentPage}
-                  />
-                </div>
-              )}
+                {/* Pagination */}
+                {totalPages > 1 && (
+                  <div className="mt-6">
+                    <Pagination
+                      currentPage={currentPage}
+                      totalPages={totalPages}
+                      onPageChange={setCurrentPage}
+                    />
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </main>

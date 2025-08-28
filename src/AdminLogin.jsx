@@ -41,7 +41,7 @@ export default function AdminLogin() {
             "Connexion et récupération du profil réussies. Redirection..."
           );
           // 5. Redirection vers le dashboard
-          navigate("/dashboard");
+          navigate("/");
         } else {
           // En cas d'échec de la récupération du profil, on nettoie
           setError("Impossible de récupérer le profil administrateur.");
@@ -99,5 +99,3 @@ export default function AdminLogin() {
     </div>
   );
 }
-
-

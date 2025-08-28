@@ -2,38 +2,16 @@ import React, { useState, useEffect, useCallback } from "react";
 import Sidebar from "../components/Sidebar";
 import Topbar from "../components/Topbar";
 import StatCard from "../components/StatCard";
-import QuestionsTable from "../components/QuestionsTable";
-import Modal from "../components/Modal";
-import QuestionWizard from "../components/QuestionForm";
+// Nettoyage: pas de gestion des questions sur le dashboard
 
-import Pagination from "../components/Pagination";
 import { fetchProfileAdmin } from "../services/loginAdminService";
-import ConfirmationModal from "../components/ConfirmationModal";
+import { fetchQuestionsList } from "../services/QuestionService";
+// Pas d'import de services de Questions sur le dashboard
+import { fetchQuizList } from "../services/QuizServices";
+import { fetchListerBusinessSectors } from "../services/BusinessSectorService";
 
-import {
-  fetchQuestionsList,
-  fetchCreateQuestions,
-  fetchSoftDeleteQuestions,
-  fetchQuestionsId,
-  fetchPutQuestions,
-  fetchDeletePermanentQuestions,
-  fetchRestoreQuestions,
-  fetchTrashedQuestionsList,
-} from "../services/QuestionService";
-import {
-  PieChart,
-  Users,
-  Grid,
-  Edit2,
-  Settings,
-  LogOut,
-  PlusCircle,
-  Search,
-  Menu,
-  Trash2,
-  Edit,
-  RotateCcw,
-} from "lucide-react";
+import { fetchCategoriesList } from "../services/QuestionCategorieService";
+import { Grid, Layers, Folder, PieChart } from "lucide-react";
 
 export default function Dashboard() {
   const [active, setActive] = useState("dashboard");
@@ -63,6 +41,11 @@ export default function Dashboard() {
   const [isLoading, setIsLoading] = useState(true);
   const [trashedQuestions, setTrashedQuestions] = useState([]);
   const [isTrashView, setIsTrashView] = useState(false);
+
+  // Totaux pour dashboard
+  const [totalQuizzes, setTotalQuizzes] = useState(0);
+  const [totalSectors, setTotalSectors] = useState(0);
+  const [totalCategories, setTotalCategories] = useState(0);
 
   const loadData = useCallback(async () => {
     setIsLoading(true);
@@ -94,6 +77,38 @@ export default function Dashboard() {
   useEffect(() => {
     loadData();
   }, [loadData]);
+
+  // Charger les totaux (quiz, secteurs, catégories)
+  useEffect(() => {
+    async function loadSummaryCounts() {
+      try {
+        // Quiz
+        const quizResp = await fetchQuizList(1, 10);
+        if (quizResp && quizResp.success) {
+          const total =
+            quizResp.pagination?.totalItems ??
+            (quizResp.data?.quizzes?.length || quizResp.data?.length || 0);
+          setTotalQuizzes(total);
+        }
+
+        // Secteurs d'activité (pas de pagination fournie → longueur filtrée)
+        const sectorResp = await fetchListerBusinessSectors();
+        if (sectorResp && sectorResp.success) {
+          setTotalSectors((sectorResp.data || []).length);
+        }
+
+        // Catégories
+        const catResp = await fetchCategoriesList(1, 10);
+        if (catResp && catResp.success) {
+          const totalCat =
+            catResp.pagination?.totalItems ??
+            (catResp.data?.categories?.length || catResp.data?.length || 0);
+          setTotalCategories(totalCat);
+        }
+      } catch (e) {}
+    }
+    loadSummaryCounts();
+  }, []);
 
   useEffect(() => {
     setCurrentPage(1);
@@ -210,11 +225,11 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white text-slate-800">
-      <div className="max-w-[1200px] mx-auto p-6 flex gap-6">
+      <div className="flex">
         <Sidebar active={active} setActive={setActive} />
 
-        <main className="flex-1">
-          <div className="mb-6">
+        <main className="flex-1 flex flex-col min-h-screen">
+          <div className="mb-6 p-6">
             <Topbar
               onOpenCreate={() => {
                 setEditing(null);
@@ -226,72 +241,90 @@ export default function Dashboard() {
           </div>
 
           {active === "dashboard" && (
-            <div className="space-y-6">
-              <div className="grid grid-cols-3 gap-4">
+            <div className="p-6 space-y-6">
+              {/* Tuiles de statistiques principales */}
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
                 <StatCard
                   title="Questions"
                   value={questions.length}
-                  delta={12}
                   icon={PieChart}
                 />
+                <StatCard title="Total Quiz" value={totalQuizzes} icon={Grid} />
                 <StatCard
-                  title="Utilisateurs actifs"
-                  value={2540}
-                  delta={8}
-                  icon={Users}
+                  title="Secteurs d'activité"
+                  value={totalSectors}
+                  icon={Layers}
                 />
                 <StatCard
-                  title="Taux de complétion"
-                  value={"72%"}
-                  delta={3}
-                  icon={Grid}
+                  title="Catégories"
+                  value={totalCategories}
+                  icon={Folder}
                 />
               </div>
 
-              <div className="bg-white rounded-2xl p-4 shadow-sm border border-slate-100">
-                <div className="flex items-center justify-between mb-3">
-                  <div className="font-semibold">
-                    {isTrashView ? "Corbeille" : "Dernières questions"}
-                  </div>
-                  {/* BOUTONS POUR BASCULER DE VUE */}
-                  <div className="flex items-center gap-2">
-                    <button
-                      onClick={() => setIsTrashView(false)}
-                      className={`px-3 py-1 text-sm rounded-lg ${
-                        !isTrashView
-                          ? "bg-indigo-100 text-indigo-700"
-                          : "hover:bg-slate-100"
-                      }`}
-                    >
-                      Liste principale
-                    </button>
-                    <button
-                      onClick={() => setIsTrashView(true)}
-                      className={`px-3 py-1 text-sm rounded-lg ${
-                        isTrashView
-                          ? "bg-red-100 text-red-700"
-                          : "hover:bg-slate-100"
-                      }`}
-                    >
-                      Corbeille
-                    </button>
+              {/* Deux panneaux: Activité récente et Statistiques rapides */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
+                  <h3 className="text-lg font-semibold text-slate-800 mb-4">
+                    Activité récente
+                  </h3>
+                  <ul className="space-y-3 text-sm">
+                    <li className="flex items-start gap-2">
+                      <span className="mt-1 h-2 w-2 rounded-full bg-blue-500" />
+                      <div>
+                        <div className="font-medium">Nouveau quiz créé</div>
+                        <div className="text-slate-500">
+                          Quiz JavaScript Avancé · il y a 2h
+                        </div>
+                      </div>
+                    </li>
+
+                    <li className="flex items-start gap-2">
+                      <span className="mt-1 h-2 w-2 rounded-full bg-purple-500" />
+                      <div>
+                        <div className="font-medium">Nouvelle catégorie</div>
+                        <div className="text-slate-500">
+                          DevOps et Cloud · hier
+                        </div>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+                <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
+                  <h3 className="text-lg font-semibold text-slate-800 mb-4">
+                    Statistiques rapides
+                  </h3>
+                  <div className="space-y-4 text-sm">
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-600">
+                        Quiz les plus populaires
+                      </span>
+                      <span className="font-medium">
+                        JavaScript (42 sessions)
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-600">
+                        Taux de réussite moyen
+                      </span>
+                      <span className="font-medium">76%</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-600">
+                        Quiz les plus difficiles
+                      </span>
+                      <span className="font-medium">
+                        Algorithmique (45% réussite)
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-600">
+                        Sessions aujourd'hui
+                      </span>
+                      <span className="font-medium">23</span>
+                    </div>
                   </div>
                 </div>
-
-                <QuestionsTable
-                  questions={isTrashView ? trashedQuestions : filtered()}
-                  onEdit={handleEditQuestion}
-                  onSoftDelete={handleSoftDeleteQuestion}
-                  onRestore={handleRestoreQuestion}
-                  onPermanentDelete={handlePermanentDeleteQuestion}
-                  isTrash={isTrashView}
-                />
-
-                <Pagination
-                  currentPage={currentPage}
-                  totalPages={totalPages}
-                  onPageChange={setCurrentPage}
-                />
               </div>
             </div>
           )}
@@ -301,34 +334,6 @@ export default function Dashboard() {
               (Page utilisateurs — À implémenter)
             </div>
           )}
-
-          {/* {active === "quiz" && (
-            <div className="p-6 bg-white rounded-2xl shadow-sm border border-slate-100">
-              <h2 className="text-lg font-semibold mb-4">
-                Gestion des Quiz
-              </h2>
-              <p className="text-slate-600 mb-4">
-                Cette section permet de créer et gérer les quiz de l'application.
-              </p>
-              <div className="text-center py-8">
-                <div className="text-slate-400 mb-4">
-                  <PieChart size={48} className="mx-auto" />
-                </div>
-                <h3 className="text-lg font-medium text-slate-600 mb-2">
-                  Page Quiz
-                </h3>
-                <p className="text-slate-500 mb-4">
-                  Cette fonctionnalité est maintenant disponible dans une page dédiée.
-                </p>
-                <button
-                  onClick={() => setActive("dashboard")}
-                  className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                >
-                  Retour au Dashboard
-                </button>
-              </div>
-            </div>
-          )} */}
 
           {active === "settings" && (
             <div className="p-6 bg-white rounded-2xl shadow-sm border border-slate-100">
@@ -380,43 +385,6 @@ export default function Dashboard() {
           )}
         </main>
       </div>
-
-      {/* Modal avec le nouveau QuestionWizard */}
-      <Modal
-        open={openCreate}
-        onClose={() => {
-          setOpenCreate(false);
-          setEditingQuestionData(null);
-        }}
-        title="" // Le titre sera géré par le wizard
-        sizeClass="w-[800px] max-w-[95vw] p-6"
-      >
-        <QuestionWizard
-          onClose={() => {
-            setOpenCreate(false);
-            setEditingQuestionData(null);
-          }}
-          onSave={handleCreateOrUpdate}
-          initialData={editingQuestionData}
-        />
-      </Modal>
-
-      <Modal
-        open={!!openQuestionsFor}
-        onClose={() => setOpenQuestionsFor(null)}
-        title={openQuestionsFor ? `Questions — ${openQuestionsFor.title}` : ""}
-        sizeClass="w-[560px] max-w-[90vw] max-h-[90vh] overflow-y-auto p-4"
-      >
-        {openQuestionsFor ? <QuestionsManager quiz={openQuestionsFor} /> : null}
-      </Modal>
-      <ConfirmationModal
-        open={confirmAction.isOpen}
-        onClose={() => setConfirmAction({ isOpen: false })}
-        onConfirm={confirmAction.onConfirm}
-        title={confirmAction.title}
-      >
-        {confirmAction.message}
-      </ConfirmationModal>
     </div>
   );
 }

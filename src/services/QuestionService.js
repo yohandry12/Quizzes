@@ -27,21 +27,34 @@ export async function fetchCreateQuestions(data) {
 }
 
 // Service pour rechercher des questions
-export async function fetchQuestionsSearch() {
+export async function fetchQuestionsSearch(query, page = 1, limit = 10) {
   try {
-    const response = await fetch(`${BASE_URL}/api/questions/search`, {
+    // Construire l'URL avec les paramètres de recherche
+    const url = new URL(`${BASE_URL}/api/questions/search`);
+    url.searchParams.append("q", query || ""); // Le terme de recherche
+    url.searchParams.append("page", page.toString());
+    url.searchParams.append("limit", limit.toString());
+
+    const response = await fetch(url.toString(), {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${localStorage.getItem("admin_token")}`,
       },
     });
-    if (!response.ok)
+
+    if (!response.ok) {
       throw new Error("Erreur lors de la recherche des questions");
+    }
+
     return await response.json();
   } catch (error) {
-    console.error(error);
-    return [];
+    console.error("Erreur dans fetchQuestionsSearch:", error);
+    return {
+      success: false,
+      data: [],
+      message: error.message,
+    };
   }
 }
 
