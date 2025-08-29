@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Search, Clock, Users, Lock, Play, Star } from 'lucide-react';
 import QuizLoginModal from '../components/QuizLoginModal';
-import { fetchPublicQuizList } from '../services/PublicQuizServices';
+import { getPublicQuizzesByIds } from '../services/PublicQuizServices';
 
 const QuizHome = ({ onQuizStart, onLoginSuccess }) => {
   const [quizzes, setQuizzes] = useState([]);
@@ -18,19 +18,28 @@ const QuizHome = ({ onQuizStart, onLoginSuccess }) => {
   const loadQuizzes = async () => {
     try {
       // Utiliser la vraie API pour récupérer les quiz
-      const response = await fetchPublicQuizList(1, 50);
-      if (response && response.data && response.data.length > 0) {
-        console.log('Quiz chargés depuis l\'API:', response.data.length);
-        setQuizzes(response.data);
-      } else {
-        // Fallback vers les mocks si l'API n'est pas disponible
-        console.log('API non disponible, utilisation des mocks...');
-        const { mockApi } = await import('../data/mockQuizData');
-        const mockResponse = await mockApi.fetchQuizList(1, 50);
-        if (mockResponse && mockResponse.data) {
-          console.log('Quiz chargés depuis les mocks:', mockResponse.data.length);
-          setQuizzes(mockResponse.data);
+      // Construire la liste depuis les IDs publics (image 2)
+      const idsEnv = import.meta.env.VITE_PUBLIC_QUIZ_IDS || '';
+      const ids = idsEnv
+        .split(',')
+        .map((s) => parseInt(s.trim(), 10))
+        .filter((n) => !Number.isNaN(n));
+
+      if (ids.length > 0) {
+        const publicQuizzes = await getPublicQuizzesByIds(ids);
+        if (publicQuizzes.length > 0) {
+          console.log('Quiz publics chargés:', publicQuizzes.length);
+          setQuizzes(publicQuizzes);
+          return;
         }
+      }
+      // Fallback vers les mocks si aucun ID ou aucun résultat
+      console.log('Aucun ID public fourni ou aucun résultat. Utilisation des mocks...');
+      const { mockApi } = await import('../data/mockQuizData');
+      const mockResponse = await mockApi.fetchQuizList(1, 50);
+      if (mockResponse && mockResponse.data) {
+        console.log('Quiz chargés depuis les mocks:', mockResponse.data.length);
+        setQuizzes(mockResponse.data);
       }
     } catch (error) {
       console.error('Erreur lors du chargement des quiz:', error);

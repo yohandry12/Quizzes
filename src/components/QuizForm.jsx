@@ -11,6 +11,8 @@ const INITIAL_STATE = {
   max_attempts: 10,
   shuffle_questions: true,
   show_results: true,
+  access_password: "",
+  show_results_immediately: true,
   question_ids: [],
 };
 
@@ -54,6 +56,15 @@ export default function QuizForm({ onClose, onSave, initialData = null }) {
         time_limit: initialData.time_limit
           ? Math.floor(initialData.time_limit / 60)
           : 0,
+        // S'assurer que access_password et show_results_immediately sont bien présents même si vides
+        access_password:
+          typeof initialData.access_password !== "undefined"
+            ? initialData.access_password
+            : "",
+        show_results_immediately:
+          typeof initialData.show_results_immediately !== "undefined"
+            ? initialData.show_results_immediately
+            : true,
       };
       setFormData({ ...INITIAL_STATE, ...convertedData });
     }
@@ -94,7 +105,15 @@ export default function QuizForm({ onClose, onSave, initialData = null }) {
       const apiData = {
         ...formData,
         time_limit: formData.time_limit > 0 ? formData.time_limit * 60 : 0, // Convertir en secondes
+        access_password: formData.access_password || "",
+        show_results_immediately:
+          typeof formData.show_results_immediately !== "undefined"
+            ? formData.show_results_immediately
+            : true,
       };
+
+      // Toujours envoyer access_password et show_results_immediately même en update
+      // Ne jamais supprimer question_ids ici, pour garantir que les champs sont toujours transmis
 
       await onSave(apiData);
     } catch (err) {
@@ -238,6 +257,19 @@ export default function QuizForm({ onClose, onSave, initialData = null }) {
 
         {/* Options */}
         <div className="space-y-3">
+          <div>
+            <label className="block text-sm font-medium text-slate-700 mb-2">
+              Mot de passe d'accès
+            </label>
+            <input
+              type="text"
+              value={formData.access_password}
+              onChange={(e) => handleInputChange("access_password", e.target.value)}
+              className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              placeholder="Laisser vide pour accès libre"
+            />
+          </div>
+
           <div className="flex items-center">
             <input
               type="checkbox"
@@ -271,6 +303,24 @@ export default function QuizForm({ onClose, onSave, initialData = null }) {
               className="ml-2 text-sm text-slate-700"
             >
               Afficher les résultats
+            </label>
+          </div>
+
+          <div className="flex items-center">
+            <input
+              type="checkbox"
+              id="show_results_immediately"
+              checked={formData.show_results_immediately}
+              onChange={(e) =>
+                handleInputChange("show_results_immediately", e.target.checked)
+              }
+              className="w-4 h-4 text-indigo-600 border-slate-300 rounded focus:ring-indigo-500"
+            />
+            <label
+              htmlFor="show_results_immediately"
+              className="ml-2 text-sm text-slate-700"
+            >
+              Afficher les résultats immédiatement
             </label>
           </div>
         </div>

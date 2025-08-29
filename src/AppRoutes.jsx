@@ -7,7 +7,7 @@ import Categories from "./pages/Categories";
 import BusinessSectors from "./pages/BusinessSectors";
 import QuizDetailsPage from "./pages/QuizDetailsPage";
 import Questions from "./pages/Questions.jsx";
-import CVTemplate from "./pages/CVTemplate.jsx";
+import DesignerCV from "./pages/designer-cv-portfolio.jsx";
 
 function RequireAuth({ children }) {
   const token = localStorage.getItem("admin_token");
@@ -73,7 +73,7 @@ export default function AppRoutes() {
           }
         />
 
-        <Route path="/template" element={<CVTemplate />} />
+        <Route path="/template" element={<DesignerCV />} />
       </Routes>
     </BrowserRouter>
   );
