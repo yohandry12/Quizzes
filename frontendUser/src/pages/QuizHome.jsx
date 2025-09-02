@@ -480,18 +480,6 @@ const QuizHome = ({ onQuizStart, onLoginSuccess }) => {
                       <span>Protégé</span>
                     </div>
                   )}
-                  <div className="flex items-center gap-2 bg-black/20 backdrop-blur-sm border border-white/20 rounded-full px-3 py-1">
-                    {[...Array(5)].map((_, i) => (
-                      <Star
-                        key={i}
-                        className={`w-3 h-3 ${
-                          i < (quiz.difficulty || 3)
-                            ? "text-yellow-300 fill-current"
-                            : "text-white/30"
-                        }`}
-                      />
-                    ))}
-                  </div>
                 </div>
 
                 <div className="p-6 flex flex-col flex-grow">
