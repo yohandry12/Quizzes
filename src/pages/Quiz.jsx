@@ -494,9 +494,11 @@ export default function Quiz() {
                                   <Copy size={16} />
                                 </button>
                                 <button
-                                  onClick={() => handleSoftDeleteQuiz(quiz)}
+                                  onClick={() =>
+                                    handlePermanentDeleteQuiz(quiz)
+                                  }
                                   className="p-2 hover:bg-red-100 rounded-lg"
-                                  title="Mettre à la corbeille"
+                                  title="Supprimer définitivement"
                                 >
                                   <Trash2 size={16} />
                                 </button>
@@ -510,15 +512,6 @@ export default function Quiz() {
                                   title="Restaurer"
                                 >
                                   <RotateCcw size={16} />
-                                </button>
-                                <button
-                                  onClick={() =>
-                                    handlePermanentDeleteQuiz(quiz)
-                                  }
-                                  className="p-2 hover:bg-red-100 rounded-lg"
-                                  title="Supprimer définitivement"
-                                >
-                                  <Trash2 size={16} />
                                 </button>
                               </>
                             )}
@@ -564,39 +557,6 @@ export default function Quiz() {
           initialData={editingQuiz}
         />
       </Modal>
-
-      {/* Modal des détails du quiz
-      <Modal
-        open={!!selectedQuiz && !openQuestionsManager}
-        onClose={() => setSelectedQuiz(null)}
-        title=""
-        sizeClass="w-[800px] max-w-[95vw] max-h-[90vh] overflow-y-auto p-6"
-      >
-        {selectedQuiz && (
-          <QuizDetails
-            quiz={selectedQuiz}
-            onClose={() => setSelectedQuiz(null)}
-            onAddQuestions={handleAddQuestions}
-            onEdit={handleEditQuiz}
-          />
-        )}
-      </Modal> */}
-
-      {/* Modal de gestion des questions
-      <Modal
-        open={openQuestionsManager}
-        onClose={() => setOpenQuestionsManager(false)}
-        title=""
-        sizeClass="w-[800px] max-w-[95vw] max-h-[90vh] overflow-y-auto p-6"
-      >
-        {selectedQuiz && (
-          <QuizQuestionsManager
-            quiz={selectedQuiz}
-            onClose={() => setOpenQuestionsManager(false)}
-            onQuestionsAdded={handleQuestionsAdded}
-          />
-        )}
-      </Modal> */}
 
       {/* Modal de confirmation */}
       <ConfirmationModal
