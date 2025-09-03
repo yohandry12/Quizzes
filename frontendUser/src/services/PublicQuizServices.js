@@ -1,14 +1,10 @@
 const BASE_URL = "https://hardcore-ramanujan.37-148-206-126.plesk.page";
 
-// ----------------------
-// Endpoints Publics (Image 1)
-// ----------------------
-
 // GET /api/public/quiz/{id}/info
 export async function getPublicQuizInfo(quizId) {
   try {
     const response = await fetch(`${BASE_URL}/api/public/quiz/${quizId}/info`, {
-        method: "GET",
+      method: "GET",
       headers: { "Content-Type": "application/json" },
     });
     if (!response.ok) return null;
@@ -25,20 +21,30 @@ export async function startPublicQuizSession(quizId, candidate = {}) {
     // Normaliser les champs attendus par l'API (spécifique aux docs backend)
     const normalizedCandidate = {
       candidate_name:
-        candidate.candidate_name || candidate.name || candidate.fullname || candidate.nom || "",
+        candidate.candidate_name ||
+        candidate.name ||
+        candidate.fullname ||
+        candidate.nom ||
+        "",
       candidate_email:
         candidate.candidate_email || candidate.email || candidate.mail || "",
       candidate_phone:
-        candidate.candidate_phone || candidate.phone || candidate.telephone || "",
+        candidate.candidate_phone ||
+        candidate.phone ||
+        candidate.telephone ||
+        "",
       access_password:
         candidate.access_password || candidate.password || candidate.code || "",
     };
 
-    const response = await fetch(`${BASE_URL}/api/public/quiz/${quizId}/start`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(normalizedCandidate),
-    });
+    const response = await fetch(
+      `${BASE_URL}/api/public/quiz/${quizId}/start`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(normalizedCandidate),
+      }
+    );
     if (!response.ok) return null;
     return await response.json();
   } catch (error) {
@@ -63,7 +69,7 @@ export async function getSessionQuestions(token) {
 }
 
 // POST /api/public/quiz/session/{token}/answer
-export async function submitSessionAnswer(token, questionId, answerData) { 
+export async function submitSessionAnswer(token, questionId, answerData) {
   try {
     const payload = {
       question_id: questionId,
@@ -80,9 +86,9 @@ export async function submitSessionAnswer(token, questionId, answerData) {
     );
     // It's better to check the response before returning
     if (!response.ok) {
-        const errorResult = await response.json().catch(() => null);
-        console.error("API Error on answer submission:", errorResult);
-        throw new Error(errorResult?.message || "Failed to submit answer.");
+      const errorResult = await response.json().catch(() => null);
+      console.error("API Error on answer submission:", errorResult);
+      throw new Error(errorResult?.message || "Failed to submit answer.");
     }
     return await response.json();
   } catch (error) {
@@ -102,7 +108,7 @@ export async function submitSession(token) {
     return await response.json();
   } catch (error) {
     console.error("Erreur submitSession:", error);
-      return null;
+    return null;
   }
 }
 

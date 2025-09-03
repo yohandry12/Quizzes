@@ -113,10 +113,54 @@ export default function Quiz() {
   async function handleCreateOrUpdate(data) {
     try {
       if (data.id) {
-        // Mode édition
-        await fetchPutQuiz(data.id, data);
+        // Mode édition - Préserver les questions existantes
+        console.log("Mode édition du quiz:", data.id);
+
+        // Récupérer les questions actuelles du quiz avant la mise à jour
+        let existingQuestions = [];
+        try {
+          const questionsResponse = await fetchQuizQuestions(data.id);
+          if (questionsResponse && questionsResponse.success) {
+            existingQuestions = questionsResponse.data.questions || [];
+            console.log(
+              "Questions existantes récupérées:",
+              existingQuestions.length
+            );
+          }
+        } catch (error) {
+          console.error(
+            "Erreur lors de la récupération des questions existantes:",
+            error
+          );
+        }
+
+        // Créer une copie des données sans les questions pour la mise à jour du quiz
+        const quizDataForUpdate = { ...data };
+        delete quizDataForUpdate.questions;
+        delete quizDataForUpdate.question_ids;
+
+        // Mettre à jour le quiz (sans les questions)
+        const updateResponse = await fetchPutQuiz(data.id, quizDataForUpdate);
+        console.log("Quiz mis à jour:", updateResponse);
+
+        // Si il y avait des questions existantes, les remettre
+        if (existingQuestions.length > 0) {
+          const existingQuestionIds = existingQuestions.map((q) => q.id);
+          console.log("Remise en place des questions:", existingQuestionIds);
+
+          try {
+            await fetchAddQuestionsToQuiz(data.id, existingQuestionIds);
+            console.log("Questions restaurées avec succès");
+          } catch (error) {
+            console.error(
+              "Erreur lors de la restauration des questions:",
+              error
+            );
+          }
+        }
       } else {
         // Mode création
+        console.log("Mode création d'un nouveau quiz");
         await fetchCreateQuiz(data);
         if (currentPage !== 1) {
           setCurrentPage(1);
@@ -127,7 +171,7 @@ export default function Quiz() {
       setEditingQuiz(null);
       loadQuizzes();
     } catch (error) {
-      console.error("❌ Erreur lors de la sauvegarde:", error);
+      console.error("⚠ Erreur lors de la sauvegarde:", error);
     }
   }
 
