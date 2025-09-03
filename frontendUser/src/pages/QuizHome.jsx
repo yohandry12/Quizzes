@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Search, Clock, Lock, Star, BarChart3, ArrowRight } from "lucide-react";
 import QuizLoginModal from "../components/QuizLoginModal";
@@ -33,7 +34,8 @@ const getDifficultyInfo = (difficulty) => {
   }
 };
 
-const QuizHome = ({ onQuizStart, onLoginSuccess }) => {
+const QuizHome = ({ onLoginSuccess }) => {
+  const navigate = useNavigate();
   const [quizzes, setQuizzes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -92,8 +94,9 @@ const QuizHome = ({ onQuizStart, onLoginSuccess }) => {
   };
 
   const handleLoginSuccess = (userData) => {
-    if (onQuizStart && selectedQuiz) {
-      onQuizStart(selectedQuiz, userData);
+    if (selectedQuiz) {
+      // Au lieu de mettre à jour l'état, on navigue vers la nouvelle URL
+      navigate(`/quiz-player/${selectedQuiz.id}`, { state: { userData } });
     }
   };
 
