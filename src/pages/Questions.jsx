@@ -275,14 +275,10 @@ export default function Questions() {
                 <div className="flex items-center justify-between">
                   <div>
                     <h1 className="text-2xl font-bold text-slate-900">
-                      {isTrashView
-                        ? "Questions supprimées"
-                        : "Gestion des Questions"}
+                      Gestion des Questions
                     </h1>
                     <p className="text-slate-600 mt-1">
-                      {isTrashView
-                        ? "Restaurez ou supprimez définitivement vos questions"
-                        : "Créez, modifiez et organisez vos questions de quiz"}
+                      "Créez, modifiez et organisez vos questions de quiz"
                     </p>
                   </div>
 
@@ -315,7 +311,7 @@ export default function Questions() {
                   </div>
 
                   {/* Boutons de vue */}
-                  <div className="flex items-center bg-slate-100 rounded-xl p-1">
+                  {/* <div className="flex items-center bg-slate-100 rounded-xl p-1">
                     <button
                       onClick={() => setIsTrashView(false)}
                       className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-all ${
@@ -338,7 +334,7 @@ export default function Questions() {
                       <Trash2 className="w-4 h-4" />
                       Corbeille
                     </button>
-                  </div>
+                  </div> */}
                 </div>
               </div>
 
@@ -353,9 +349,9 @@ export default function Questions() {
                   <QuestionsTable
                     questions={getFilteredQuestions()}
                     onEdit={handleEditQuestion}
-                    onSoftDelete={handleSoftDeleteQuestion}
+                    onSoftDelete={handlePermanentDeleteQuestion}
                     onRestore={handleRestoreQuestion}
-                    onPermanentDelete={handlePermanentDeleteQuestion}
+                    // onPermanentDelete={handlePermanentDeleteQuestion}
                     isTrash={isTrashView}
                   />
                 )}

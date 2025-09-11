@@ -282,18 +282,18 @@ export default function Quiz() {
     });
   }
 
-  async function handleRestoreQuiz(quiz) {
-    setConfirmAction({
-      isOpen: true,
-      title: "Restaurer le quiz",
-      message: `Êtes-vous sûr de vouloir restaurer le quiz : "${quiz.title}" ?`,
-      onConfirm: async () => {
-        await fetchRestoreQuiz(quiz.id);
-        loadQuizzes();
-        setConfirmAction({ isOpen: false });
-      },
-    });
-  }
+  // async function handleRestoreQuiz(quiz) {
+  //   setConfirmAction({
+  //     isOpen: true,
+  //     title: "Restaurer le quiz",
+  //     message: `Êtes-vous sûr de vouloir restaurer le quiz : "${quiz.title}" ?`,
+  //     onConfirm: async () => {
+  //       await fetchRestoreQuiz(quiz.id);
+  //       loadQuizzes();
+  //       setConfirmAction({ isOpen: false });
+  //     },
+  //   });
+  // }
 
   async function handlePermanentDeleteQuiz(quiz) {
     setConfirmAction({
@@ -393,13 +393,11 @@ export default function Quiz() {
                     {isTrashView ? "Corbeille" : "Liste des quiz"}
                   </div>
                   <p className="text-slate-600 text-sm mt-1">
-                    {isTrashView
-                      ? "Restaurez ou supprimez définitivement vos quiz"
-                      : "Parcourez et gérez vos quiz"}
+                    "Parcourez et gérez vos quiz"
                   </p>
                 </div>
                 {/* BOUTONS POUR BASCULER DE VUE */}
-                <div className="flex items-center bg-slate-100 rounded-xl p-1">
+                {/* <div className="flex items-center bg-slate-100 rounded-xl p-1">
                   <button
                     onClick={() => setIsTrashView(false)}
                     className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-all ${
@@ -420,7 +418,7 @@ export default function Quiz() {
                   >
                     Corbeille
                   </button>
-                </div>
+                </div> */}
               </div>
               {/* Contenu de section */}
               <div className="p-6">
@@ -548,7 +546,7 @@ export default function Quiz() {
                                 </button>
                               </>
                             )}
-                            {isTrashView && (
+                            {/* {isTrashView && (
                               <>
                                 <button
                                   onClick={() => handleRestoreQuiz(quiz)}
@@ -558,7 +556,7 @@ export default function Quiz() {
                                   <RotateCcw size={16} />
                                 </button>
                               </>
-                            )}
+                            )} */}
                           </div>
                         </div>
                       </div>

@@ -104,31 +104,31 @@ export default function BusinessSectors() {
     setOpenCreate(true);
   }
 
-  async function handleSoftDeleteSector(sector) {
-    setConfirmAction({
-      isOpen: true,
-      title: "Mettre à la corbeille",
-      message: `Êtes-vous sûr de vouloir supprimer le secteur : "${sector.name}" ?`,
-      onConfirm: async () => {
-        await fetchDeleteBusinessSectors(sector.id);
-        loadSectors();
-        setConfirmAction({ isOpen: false });
-      },
-    });
-  }
+  // async function handleSoftDeleteSector(sector) {
+  //   setConfirmAction({
+  //     isOpen: true,
+  //     title: "Mettre à la corbeille",
+  //     message: `Êtes-vous sûr de vouloir supprimer le secteur : "${sector.name}" ?`,
+  //     onConfirm: async () => {
+  //       await fetchDeleteBusinessSectors(sector.id);
+  //       loadSectors();
+  //       setConfirmAction({ isOpen: false });
+  //     },
+  //   });
+  // }
 
-  async function handleRestoreSector(sector) {
-    setConfirmAction({
-      isOpen: true,
-      title: "Restaurer le secteur",
-      message: `Êtes-vous sûr de vouloir restaurer le secteur : "${sector.name}" ?`,
-      onConfirm: async () => {
-        await fetchRestoreBusinessSectors(sector.id, {});
-        loadSectors();
-        setConfirmAction({ isOpen: false });
-      },
-    });
-  }
+  // async function handleRestoreSector(sector) {
+  //   setConfirmAction({
+  //     isOpen: true,
+  //     title: "Restaurer le secteur",
+  //     message: `Êtes-vous sûr de vouloir restaurer le secteur : "${sector.name}" ?`,
+  //     onConfirm: async () => {
+  //       await fetchRestoreBusinessSectors(sector.id, {});
+  //       loadSectors();
+  //       setConfirmAction({ isOpen: false });
+  //     },
+  //   });
+  // }
 
   async function handlePermanentDeleteSector(sector) {
     setConfirmAction({
@@ -163,14 +163,10 @@ export default function BusinessSectors() {
               <div className="p-6 border-b border-slate-100 flex items-center justify-between">
                 <div>
                   <div className="text-slate-900 font-semibold">
-                    {isTrashView
-                      ? "Corbeille"
-                      : "Liste des secteurs d'activité"}
+                    <h1>Liste des secteurs d'activité</h1>
                   </div>
                   <p className="text-slate-600 text-sm mt-1">
-                    {isTrashView
-                      ? "Restaurez ou supprimez définitivement vos secteurs"
-                      : "Créez, modifiez et organisez vos secteurs d'activité"}
+                    "Créez, modifiez et organisez vos secteurs d'activité"
                   </p>
                 </div>
                 <div className="flex items-center gap-2">
@@ -181,7 +177,7 @@ export default function BusinessSectors() {
                     <Plus size={16} />
                     Créer un secteur
                   </button>
-                  <div className="flex items-center bg-slate-100 rounded-xl p-1">
+                  {/* <div className="flex items-center bg-slate-100 rounded-xl p-1">
                     <button
                       onClick={() => setIsTrashView(false)}
                       className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-all ${
@@ -202,7 +198,7 @@ export default function BusinessSectors() {
                     >
                       Corbeille
                     </button>
-                  </div>
+                  </div> */}
                 </div>
               </div>
               <div className="p-6 overflow-x-auto">
@@ -247,25 +243,6 @@ export default function BusinessSectors() {
                                 className="p-1 hover:bg-slate-200 rounded"
                               >
                                 <Edit size={16} />
-                              </button>
-                              <button
-                                onClick={() => handleSoftDeleteSector(sector)}
-                                className="p-1 hover:bg-red-100 rounded"
-                              >
-                                <Trash2 size={16} className="text-red-500" />
-                              </button>
-                            </>
-                          )}
-                          {isTrashView && (
-                            <>
-                              <button
-                                onClick={() => handleRestoreSector(sector)}
-                                className="p-1 hover:bg-green-100 rounded"
-                              >
-                                <RotateCcw
-                                  size={16}
-                                  className="text-green-500"
-                                />
                               </button>
                               <button
                                 onClick={() =>

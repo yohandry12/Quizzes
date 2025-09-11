@@ -161,12 +161,10 @@ export default function Categories() {
               <div className="p-6 border-b border-slate-100 flex items-center justify-between">
                 <div>
                   <div className="text-slate-900 font-semibold">
-                    {isTrashView ? "Corbeille" : "Liste des catégories"}
+                    <h1>Liste des catégories</h1>
                   </div>
                   <p className="text-slate-600 text-sm mt-1">
-                    {isTrashView
-                      ? "Restaurez ou supprimez définitivement vos catégories"
-                      : "Créez, modifiez et organisez vos catégories"}
+                    "Créez, modifiez et organisez vos catégories"
                   </p>
                 </div>
                 <div className="flex items-center gap-2">
@@ -177,7 +175,7 @@ export default function Categories() {
                     <Plus size={16} />
                     Créer une catégorie
                   </button>
-                  <div className="flex items-center bg-slate-100 rounded-xl p-1">
+                  {/* <div className="flex items-center bg-slate-100 rounded-xl p-1">
                     <button
                       onClick={() => setIsTrashView(false)}
                       className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-all ${
@@ -198,7 +196,7 @@ export default function Categories() {
                     >
                       Corbeille
                     </button>
-                  </div>
+                  </div> */}
                 </div>
               </div>
               <div className="p-6 overflow-x-auto">
